@@ -16,10 +16,21 @@ class User(db.Model):
 
 class Planet(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
     population: Mapped[int] = mapped_column(Integer, nullable=False)
     diameter: Mapped[int] = mapped_column(Integer, nullable=False)
     climate: Mapped[str] = mapped_column(String(120), nullable=False)
     # Favorite #
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "population": self.population,
+            "diameter": self.name,
+            "climate": self.climate
+        }
+
 
 class People(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -28,6 +39,15 @@ class People(db.Model):
     age: Mapped[int] = mapped_column(Integer, nullable=False)
     origin: Mapped[str] = mapped_column(String(120), nullable=False)
     # People #
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "first_name": self.name,
+            "last_name": self.population,
+            "age": self.name,
+            "origin": self.climate
+        }
 
 class Favorites(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)

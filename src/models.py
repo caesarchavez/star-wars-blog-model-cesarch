@@ -14,6 +14,12 @@ class User(db.Model):
     subscription_date: Mapped[str] = mapped_column(DateTime)
     # Favorites #
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+        }
+
 class Planet(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
@@ -38,7 +44,7 @@ class People(db.Model):
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
     age: Mapped[int] = mapped_column(Integer, nullable=False)
     origin: Mapped[str] = mapped_column(String(120), nullable=False)
-    # People #
+    # Favorite #
 
     def serialize(self):
         return {
@@ -61,11 +67,3 @@ class Favorites(db.Model):
     user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
     user: Mapped["User"] = db.relationship(backref="favorites")
 
-
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }

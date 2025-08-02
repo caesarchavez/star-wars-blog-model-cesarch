@@ -1,14 +1,46 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, DateTime, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
 db = SQLAlchemy()
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
+    first_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(120), nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
+    subscription_date: Mapped[str] = mapped_column(DateTime)
+    # Favorites #
+
+class Planet(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    population: Mapped[int] = mapped_column(Integer, nullable=False)
+    diameter: Mapped[int] = mapped_column(Integer, nullable=False)
+    climate: Mapped[str] = mapped_column(String(120), nullable=False)
+    # Favorite #
+
+class People(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    first_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    age: Mapped[int] = mapped_column(Integer, nullable=False)
+    origin: Mapped[str] = mapped_column(String(120), nullable=False)
+    # People #
+
+class Favorites(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    planet_id: Mapped[int] = mapped_column(db.ForeignKey("planet.id"))
+    planet: Mapped["Planet"] = db.relationship(backref="favorite")
+
+    people_id: Mapped[int] = mapped_column(db.ForeignKey("people.id"))
+    people: Mapped["People"] = db.relationship(backref="favorite")
+
+    user_id: Mapped[int] = mapped_column(db.ForeignKey("user.id"))
+    user: Mapped["User"] = db.relationship(backref="favorites")
+
 
 
     def serialize(self):
